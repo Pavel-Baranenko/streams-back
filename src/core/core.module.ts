@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { IS_DEV_ENV } from '../shared/utils/is-dev.util'
 import { getGraphqlConfig } from './config/graphql.config'
 import { PrismaModule } from './prisma/prisma.module'
+import { RedisModule } from './redis/redis.module';
 
 @Module({
 	imports: [
@@ -15,7 +16,8 @@ import { PrismaModule } from './prisma/prisma.module'
 			useFactory: getGraphqlConfig,
 			inject: [ConfigService]
 		}),
-		PrismaModule
+		PrismaModule,
+		RedisModule
 	]
 })
 export class CoreModule {}

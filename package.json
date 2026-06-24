@@ -34,7 +34,11 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/client": "5.22.0",
+    "connect-redis": "^9.0.0",
+    "cookie-parser": "^1.4.7",
+    "express-session": "^1.19.0",
     "graphql": "^17.0.1",
+    "ioredis": "^5.11.1",
     "prisma": "5.22.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
