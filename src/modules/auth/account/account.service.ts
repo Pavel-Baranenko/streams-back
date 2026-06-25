@@ -26,7 +26,7 @@ export class AccountService {
 
 		if (existingEmail) throw new ConflictException('Email already exists')
 
-		const user = await this.prismaService.user.create({
+		await this.prismaService.user.create({
 			data: {
 				email,
 				username,
@@ -35,6 +35,6 @@ export class AccountService {
 			}
 		})
 
-		return user
+		return true
 	}
 }

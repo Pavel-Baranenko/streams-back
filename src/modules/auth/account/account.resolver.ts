@@ -12,7 +12,7 @@ export class AccountResolver {
 		return this.accountService.findAll()
 	}
 
-	@Mutation(() => UserModule, { name: 'CreateUser' })
+	@Mutation(() => Boolean, { name: 'CreateUser' })
 	public async create(@Args('data') input: CreateUserInput) {
 		return this.accountService.create(input)
 	}
