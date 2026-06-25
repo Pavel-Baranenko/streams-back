@@ -11,8 +11,8 @@ import { parseBoolean } from './shared/utils/parse-boolean.util'
 
 async function bootstrap() {
 	const app = await NestFactory.create(CoreModule)
-	const config = app.get(ConfigService)
-	const redis = app.get(RedisService)
+	const config = app.get<ConfigService>(ConfigService)
+	const redis = app.get<RedisService>(RedisService)
 	app.use(cookieParser(config.getOrThrow<string>('COOKIE_SECRET')))
 
 	const sessionConfig = {
@@ -30,7 +30,7 @@ async function bootstrap() {
 			sameSite: 'lax' as const
 		},
 		store: new RedisStore({
-			client: redis,
+			client: redis.client,
 			prefix: config.getOrThrow<string>('SESSION_FOLDER')
 		})
 	}
@@ -51,4 +51,4 @@ async function bootstrap() {
 	await app.listen(config.getOrThrow<number>('APPLICATION_PORT') ?? 4000)
 }
 
-bootstrap()
+void bootstrap()

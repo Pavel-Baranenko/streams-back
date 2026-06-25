@@ -50,7 +50,7 @@ export class SessionService {
 					)
 				}
 
-				resolve({ user })
+				resolve(user)
 			})
 		})
 	}

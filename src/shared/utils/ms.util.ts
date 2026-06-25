@@ -45,6 +45,7 @@ export type StringValue =
 	| `${number}${UnitAnyCase}`
 	| `${number} ${UnitAnyCase}`
 
+// ms.util.ts
 export function ms(str: StringValue): number {
 	if (typeof str !== 'string' || str.length === 0 || str.length > 100) {
 		throw new Error(
@@ -52,16 +53,24 @@ export function ms(str: StringValue): number {
 		)
 	}
 
+	// ✅ Добавляем именованные группы (?<value>...) и (?<type>...)
 	const match =
 		/^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
 			str
 		)
 
-	const groups = match?.groups as { value: string; type: string } | undefined
-	if (!groups) return NaN
+	if (!match) {
+		throw new Error(`Invalid time string: "${str}"`)
+	}
 
-	const n = parseFloat(groups.value)
-	const type = (groups.type || 'ms').toLowerCase() as Lowercase<Unit>
+	// ✅ Извлекаем значения из match (без .groups)
+	const value = match[1] // первая группа - число
+	const type = (match[2] || 'ms').toLowerCase() // вторая группа - единица измерения
+
+	const n = parseFloat(value)
+	if (isNaN(n) || n <= 0) {
+		throw new Error(`Invalid number in time string: "${str}"`)
+	}
 
 	switch (type) {
 		case 'years':
@@ -100,9 +109,11 @@ export function ms(str: StringValue): number {
 			return n * s
 		case 'milliseconds':
 		case 'millisecond':
+		case 'msecs':
+		case 'msec':
 		case 'ms':
 			return n
 		default:
-			throw new Error(`Unknown unit type`)
+			throw new Error(`Unknown unit type: "${type}" in string: "${str}"`)
 	}
 }
