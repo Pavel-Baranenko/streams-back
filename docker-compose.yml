@@ -13,18 +13,18 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - streams-backend
+
   redis:
     container_name: redis
-    image: redis:5.0
+    image: redis:7.2-alpine  # или redis:6.2-alpine
     restart: always
     ports:
       - "6379:6379"
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
     volumes:
       - redis_data:/data
     networks:
       - streams-backend
-
 
 
 volumes:
