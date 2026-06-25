@@ -1,16 +1,18 @@
 import { ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
+import { RedisStore } from 'connect-redis'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import { CoreModule } from './core/core.module'
+import { RedisService } from './core/redis/redis.service'
 import { ms, type StringValue } from './shared/utils/ms.util'
 import { parseBoolean } from './shared/utils/parse-boolean.util'
 
 async function bootstrap() {
 	const app = await NestFactory.create(CoreModule)
 	const config = app.get(ConfigService)
-
+	const redis = app.get(RedisService)
 	app.use(cookieParser(config.getOrThrow<string>('COOKIE_SECRET')))
 
 	const sessionConfig = {
@@ -26,7 +28,11 @@ async function bootstrap() {
 			),
 			secure: parseBoolean(config.getOrThrow<string>('SESSION_SECURE')),
 			sameSite: 'lax' as const
-		}
+		},
+		store: new RedisStore({
+			client: redis,
+			prefix: config.getOrThrow<string>('SESSION_FOLDER')
+		})
 	}
 
 	app.use(session(sessionConfig))
